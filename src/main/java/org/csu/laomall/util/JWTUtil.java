@@ -14,7 +14,7 @@ import java.util.Objects;
 public class JWTUtil {
     private static final String SECRET = "LaoMall";
     private static final String ISS = "LaoMall";
-    private static final int EXPIRE_TIME = 24 * 60 * 60 * 1000;
+    private static final int EXPIRE_TIME =  14 * 24 * 60 * 60 * 1000;
 
     public static String createToken(String username) {
         return createToken(username, EXPIRE_TIME);
