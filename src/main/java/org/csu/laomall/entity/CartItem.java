@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @TableName("cart_item")
 public class CartItem {
@@ -19,8 +21,8 @@ public class CartItem {
     private String userId;
     @TableField("product_id")
     private int productId;
-    @TableField("num")
-    private int num;
+    @TableField("quantity")
+    private int quantity;
     @TableField("update_time")
     private Date updateTime;
 }

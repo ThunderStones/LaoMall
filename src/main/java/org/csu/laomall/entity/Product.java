@@ -36,6 +36,4 @@ public class Product {
     private String status;
     @TableField("category")
     private int categoryId;
-
-
 }
