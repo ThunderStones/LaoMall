@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @TableName("product")
 public class Product {
     @TableId(value = "product_id", type = IdType.AUTO)
@@ -36,4 +38,7 @@ public class Product {
     private String status;
     @TableField("category")
     private int categoryId;
+    @TableField("img_url")
+    private String imgUrl;
+
 }
