@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.csu.laomall.anotation.PassToken;
 import org.csu.laomall.common.CommonResponse;
 import org.csu.laomall.common.ResponseCode;
+import org.csu.laomall.service.UserService;
 import org.csu.laomall.util.JWTUtil;
+import org.csu.laomall.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -21,7 +23,8 @@ import java.lang.reflect.Method;
 @Component
 public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
-
+    @Autowired
+    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -38,7 +41,6 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             }
         }
 
-//        System.out.println("check jwt");
         if (token == null) {
             System.out.println("token is null");
             generateResponse("token is null", response);
@@ -52,15 +54,16 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             response.getWriter().write(new ObjectMapper().writeValueAsString(
                     CommonResponse.createForError(ResponseCode.NEED_LOGIN.getCode(), "Token Expired"))
             );
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-//        AccountVO account = accountService.getAccount(username);
-//        if (account == null) {
-//            generateResponse("token is invalid", response);
-//            return false;
-//        }
-//
-//        request.setAttribute("account", account);
+        UserVO user = userService.getUserInfo(username);
+        if (user == null) {
+            generateResponse("token is invalid", response);
+            return false;
+        }
+
+        request.setAttribute("user", user);
         return true;
     }
 
@@ -76,6 +79,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
     private void generateResponse(String msg, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json; charset=utf-8");
         CommonResponse<String> commonResponse = CommonResponse.createForError(msg);
         response.getWriter().write(new ObjectMapper().writeValueAsString(commonResponse));
