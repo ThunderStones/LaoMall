@@ -1,6 +1,7 @@
 package org.csu.laomall.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class UserVO {
     private String userId;
     private String phone;
     private String nickName;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date birthday;
     private Date registerDate;
     private String sex;
