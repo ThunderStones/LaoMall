@@ -1,6 +1,7 @@
 package org.csu.laomall.vo;
 
 import lombok.Data;
+import org.csu.laomall.entity.Product;
 
 import java.math.BigDecimal;
 
@@ -12,7 +13,7 @@ public class CartItemVO {
     private boolean isInStock;
     private BigDecimal unitPrice;
     private BigDecimal totalPrice;
-
+    private Product product;
     public void calculateTotalPrice() {
         totalPrice = unitPrice.multiply(new BigDecimal(quantity));
     }

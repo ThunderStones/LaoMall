@@ -2,6 +2,7 @@ package org.csu.laomall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.csu.laomall.entity.CartItem;
+import org.csu.laomall.entity.Product;
 import org.csu.laomall.persistence.CartItemMapper;
 import org.csu.laomall.persistence.ProductMapper;
 import org.csu.laomall.service.CartService;
@@ -24,17 +25,19 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItemVO> getCartItemByUserId(String userId) {
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", userId);
+        queryWrapper.eq("user_id", userId);
         List<CartItem> cartItemList = cartItemMapper.selectList(queryWrapper);
         List<CartItemVO> cartItemVOList = new ArrayList<>();
         for (CartItem cartItem : cartItemList) {
+            Product product = productMapper.selectById(cartItem.getProductId());
             CartItemVO cartItemVO = new CartItemVO();
             cartItemVO.setId(cartItem.getCartItemId());
             cartItemVO.setProductId(cartItem.getProductId());
             cartItemVO.setQuantity(cartItem.getQuantity());
-            cartItemVO.setInStock(productMapper.selectById(cartItem.getProductId()).getInventory() > 0);
-            cartItemVO.setUnitPrice(productMapper.selectById(cartItem.getProductId()).getPrice());
+            cartItemVO.setInStock(product.getInventory() > 0);
+            cartItemVO.setUnitPrice(product.getPrice());
             cartItemVO.calculateTotalPrice();
+            cartItemVO.setProduct(product);
             cartItemVOList.add(cartItemVO);
         }
         return cartItemVOList;
@@ -48,8 +51,8 @@ public class CartServiceImpl implements CartService {
         cartItem.setQuantity(Math.min(quantity, 99));
         cartItem.setUpdateTime(new Date());
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", userId);
-        queryWrapper.eq("productId", productId);
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("product_id", productId);
         if (cartItemMapper.selectOne(queryWrapper) == null) {
             cartItemMapper.insert(cartItem);
         } else {
@@ -58,17 +61,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeItem(String userId, String productId) {
+    public boolean removeItem(String userId, String productId) {
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", userId);
-        queryWrapper.eq("productId", productId);
-        cartItemMapper.delete(queryWrapper);
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("product_id", productId);
+        return cartItemMapper.delete(queryWrapper) > 0;
     }
 
     @Override
     public void clearCart(String userId) {
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", userId);
+        queryWrapper.eq("user_id", userId);
         cartItemMapper.delete(queryWrapper);
     }
 }

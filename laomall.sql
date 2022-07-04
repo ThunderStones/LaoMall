@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 04/07/2022 20:29:31
+ Date: 04/07/2022 20:49:41
 */
 
 SET NAMES utf8mb4;
@@ -3756,7 +3756,7 @@ CREATE TABLE `cart_item`  (
   `cart_item_id` int NOT NULL AUTO_INCREMENT,
   `user_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `product_id` int NOT NULL,
-  `num` int NOT NULL,
+  `quantity` int NOT NULL,
   `update_time` datetime NOT NULL,
   PRIMARY KEY (`cart_item_id`) USING BTREE,
   INDEX `fk_prod_id`(`product_id`) USING BTREE,

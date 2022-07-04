@@ -23,7 +23,12 @@ public class CategoryController {
 
     @GetMapping("/category/id/{id}")
     public CommonResponse<Category> getCategoryById(@PathVariable int id) {
-        return CommonResponse.createForSuccess(categoryService.getCategoryById(id));
+        Category category = categoryService.getCategoryById(id);
+        if (category == null) {
+            return CommonResponse.createForError("没有找到该分类");
+        } else {
+            return CommonResponse.createForSuccess(category);
+        }
     }
 
 }
