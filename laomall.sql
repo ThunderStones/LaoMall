@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 04/07/2022 20:49:41
+ Date: 05/07/2022 23:03:10
 */
 
 SET NAMES utf8mb4;
@@ -3761,7 +3761,7 @@ CREATE TABLE `cart_item`  (
   PRIMARY KEY (`cart_item_id`) USING BTREE,
   INDEX `fk_prod_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_prod_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cart_item
@@ -3778,7 +3778,7 @@ CREATE TABLE `category`  (
   `level` int NOT NULL,
   `description` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of category
@@ -3802,11 +3802,18 @@ CREATE TABLE `logs`  (
   `create_date` datetime NULL DEFAULT NULL,
   `product_id` int NULL DEFAULT NULL,
   PRIMARY KEY (`log_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of logs
 -- ----------------------------
+INSERT INTO `logs` VALUES (1, NULL, '2022-07-05 09:24:11', 2509);
+INSERT INTO `logs` VALUES (2, NULL, '2022-07-05 09:28:19', 2509);
+INSERT INTO `logs` VALUES (3, NULL, '2022-07-05 09:30:52', 2509);
+INSERT INTO `logs` VALUES (4, NULL, '2022-07-05 09:32:42', 2509);
+INSERT INTO `logs` VALUES (5, 'test', '2022-07-05 09:33:21', 2509);
+INSERT INTO `logs` VALUES (6, 'test', '2022-07-05 09:34:26', 2509);
+INSERT INTO `logs` VALUES (7, NULL, '2022-07-05 09:34:32', 2509);
 
 -- ----------------------------
 -- Table structure for order_info
@@ -3823,14 +3830,17 @@ CREATE TABLE `order_info`  (
   `pay_time` datetime NULL DEFAULT NULL,
   `other_info` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime NOT NULL,
+  `receive_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`order_id`) USING BTREE,
   INDEX `fk_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of order_info
 -- ----------------------------
+INSERT INTO `order_info` VALUES (9, 'test', 18096.70, '已收货', '已付款', '微信', '浙江省-台州市-温岭市-ut ad quis aliquip aliqua', '2022-07-05 22:28:02', NULL, '2022-07-05 22:16:17', '2022-07-05 22:42:55');
+INSERT INTO `order_info` VALUES (10, 'test', 18096.70, '已取消', '未付款', NULL, '浙江省-台州市-温岭市-ut ad quis aliquip aliqua', NULL, NULL, '2022-07-05 22:50:55', NULL);
 
 -- ----------------------------
 -- Table structure for order_item
@@ -3848,11 +3858,19 @@ CREATE TABLE `order_item`  (
   INDEX `fk_prod_d`(`product_id`) USING BTREE,
   CONSTRAINT `fk_order_id` FOREIGN KEY (`order_id`) REFERENCES `order_info` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_prod_d` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of order_item
 -- ----------------------------
+INSERT INTO `order_item` VALUES (10, 9, 5000, 188.00, 57, 10716.00);
+INSERT INTO `order_item` VALUES (11, 9, 5001, 79.00, 67, 5293.00);
+INSERT INTO `order_item` VALUES (12, 9, 5002, 139.00, 6, 834.00);
+INSERT INTO `order_item` VALUES (13, 9, 5003, 19.90, 63, 1253.70);
+INSERT INTO `order_item` VALUES (14, 10, 5000, 188.00, 57, 10716.00);
+INSERT INTO `order_item` VALUES (15, 10, 5001, 79.00, 67, 5293.00);
+INSERT INTO `order_item` VALUES (16, 10, 5002, 139.00, 6, 834.00);
+INSERT INTO `order_item` VALUES (17, 10, 5003, 19.90, 63, 1253.70);
 
 -- ----------------------------
 -- Table structure for product
@@ -3874,7 +3892,7 @@ CREATE TABLE `product`  (
   PRIMARY KEY (`product_id`) USING BTREE,
   INDEX `fk_cate`(`category`) USING BTREE,
   CONSTRAINT `fk_cate` FOREIGN KEY (`category`) REFERENCES `category` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6053 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of product
@@ -5917,15 +5935,19 @@ CREATE TABLE `user`  (
   `sex` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '男 女',
   `status` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `type` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `address` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('86', 'ad', NULL, NULL, NULL, '2022-07-03 13:24:36', NULL, '正常', '管理员');
-INSERT INTO `user` VALUES ('admin', 'admin', NULL, NULL, NULL, '2022-07-03 13:05:27', NULL, '正常', '管理员');
-INSERT INTO `user` VALUES ('test', '123456', '18186228644', '白军', '1978-12-16', '2022-07-02 16:02:20', '男', '正常', '普通用户');
+INSERT INTO `user` VALUES ('123', '123', '12312312312', '123', '2000-02-02', '2022-07-05 09:06:40', '女', '删除', '普通用户', NULL, NULL);
+INSERT INTO `user` VALUES ('86', 'ad', NULL, NULL, NULL, '2022-07-03 13:24:36', NULL, '正常', '管理员', NULL, NULL);
+INSERT INTO `user` VALUES ('abc', 'abc', '12312312312', 'abc', '1999-01-01', '2022-07-05 09:05:42', '男', '停用', '普通用户', NULL, NULL);
+INSERT INTO `user` VALUES ('admin', 'admin', NULL, NULL, NULL, '2022-07-03 13:05:27', NULL, '正常', '管理员', 'abc@lao.com', 'lorem');
+INSERT INTO `user` VALUES ('test', '123456', '18186228644', '白军', '1978-12-16', '2022-07-02 16:02:20', '男', '正常', '普通用户', '123@lao.com', 'lorem');
 
 -- ----------------------------
 -- Table structure for user_address
@@ -5948,10 +5970,12 @@ CREATE TABLE `user_address`  (
   INDEX `fk_area_id`(`area_id`) USING BTREE,
   CONSTRAINT `fk_area_id` FOREIGN KEY (`area_id`) REFERENCES `area` (`area_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_user_address` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_address
 -- ----------------------------
+INSERT INTO `user_address` VALUES (4, 'test', '18174041446', '支知则打', '331081000000', '浙江省', '台州市', '温岭市', '是', 'ut ad quis aliquip aliqua', '正常');
+INSERT INTO `user_address` VALUES (5, 'test', '18600800326', '日只步管世林六', '430103000000', '湖南省', '长沙市', '天心区', '否', 'non ullamco incididunt aute tempor', '正常');
 
 SET FOREIGN_KEY_CHECKS = 1;

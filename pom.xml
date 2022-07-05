@@ -8,9 +8,9 @@
         <version>2.7.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.edu.csu</groupId>
+    <groupId>org.csu</groupId>
     <artifactId>LaoMall</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>LaoMall</name>
     <description>LaoMall</description>
     <properties>
@@ -73,6 +73,53 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!--MANIFEST.MF 中 Class-Path 加入前缀！用命令java -jar运行jar时就不用-Dloader.path指定外部资源路径了-->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!--jar包名字是否包含唯一版本标识-->
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <!--指定含main方法的主类入口-->
+                            <mainClass>org.csu.laomall.LaoMallApplication</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <!--MANIFEST.MF 中 Class-Path 加入资源文件目录！用命令java -jar时就不用-Dloader.path指定外部资源路径了 -->
+                            <Class-Path>resources/</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                    <!-- 打包时从jar包里排除资源文件 -->
+                    <excludes>
+                        <exclude>application-dev.properties</exclude>
+                        <exclude>static/**</exclude>
+                        <exclude>templates/**</exclude>
+                    </excludes>
+                    <!-- 指定项目打成jar包输出位置 -->
+                    <outputDirectory>${project.build.directory}/output</outputDirectory>
+                </configuration>
+            </plugin>
+            <!-- 拷贝依赖jar包！插件maven-jar-plugin只是打包排除文件，
+    而把依赖jar包拷贝到外部lib目录就需要maven-dependency-plugin插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/output/lib/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
