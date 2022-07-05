@@ -32,5 +32,6 @@ public class Order {
     private String comment;
     @TableField("create_time")
     private Date createTime;
-
+    @TableField("receive_time")
+    private Date receiptTime;
 }
