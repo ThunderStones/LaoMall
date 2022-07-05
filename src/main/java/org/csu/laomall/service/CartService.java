@@ -9,7 +9,7 @@ public interface CartService {
 
     void addItem(String userId, int productId, int quantity);
 
-    boolean removeItem(String userId, String productId);
+    boolean removeItem(String userId, int productId);
 
     void clearCart(String userId);
 }

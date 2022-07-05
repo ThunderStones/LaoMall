@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -82,9 +79,35 @@ public class UserServiceImpl implements UserService {
         if (user.getStatus() != null) {
             userUpdateWrapper.set("status", user.getStatus());
         }
+        if (user.getEmail() != null) {
+            userUpdateWrapper.set("email", user.getEmail());
+        }
+        if (user.getAddress() != null) {
+            userUpdateWrapper.set("status", user.getAddress());
+        }
         userUpdateWrapper.eq("user_id", originUserVO.getUserId());
         userMapper.update(null, userUpdateWrapper);
         return new UserVO(userMapper.selectById(originUserVO.getUserId()));
+    }
+
+    @Override
+    public List<UserVO> getAllUserInfo() {
+        List<User> users = userMapper.selectList(new QueryWrapper<User>().eq("type", "普通用户"));
+        List<UserVO> userVOs = new ArrayList<>();
+        for (User user : users) {
+            userVOs.add(new UserVO(user));
+        }
+        return userVOs;
+    }
+
+    @Override
+    public List<UserVO> getDeletedUserInfo() {
+        List<User> users = userMapper.selectList(new QueryWrapper<User>().eq("type", "普通用户").eq("status", "删除"));
+        List<UserVO> userVOs = new ArrayList<>();
+        for (User user : users) {
+            userVOs.add(new UserVO(user));
+        }
+        return userVOs;
     }
 
 

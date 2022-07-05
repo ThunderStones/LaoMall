@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -71,6 +72,17 @@ public class UserController {
         System.out.println(user);
         UserVO userVO = userService.modifyUserInfo(originUserVO, user);
         return CommonResponse.createForSuccess(userVO);
+
+    }
+
+    @GetMapping("/all")
+    public CommonResponse<List<UserVO>> getAllUserInfo() {
+//        UserVO userVO = (UserVO) request.getAttribute("user");
+        return CommonResponse.createForSuccess(userService.getAllUserInfo());
+    }
+    @GetMapping("/deleted")
+    public CommonResponse<List<UserVO>> getDeletedUserInfo() {
+        return CommonResponse.createForSuccess(userService.getDeletedUserInfo());
 
     }
 }

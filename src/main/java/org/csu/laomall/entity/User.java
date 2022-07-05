@@ -35,4 +35,8 @@ public class User {
     private String status;
     @TableField
     private String type;
+    @TableField("email")
+    private String email;
+    @TableField("address")
+    private String address;
 }

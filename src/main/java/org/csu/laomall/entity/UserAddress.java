@@ -26,7 +26,7 @@ public class UserAddress {
     @TableField("district")
     private String district;
     @TableField("is_default")
-    private int isDefault;
+    private String isDefault;
     @TableField("detail")
     private String detail;
     @TableField("status")

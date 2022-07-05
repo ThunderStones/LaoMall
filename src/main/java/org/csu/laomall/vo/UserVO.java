@@ -21,7 +21,8 @@ public class UserVO {
     private String sex;
     private String status;
     private String type;
-
+    private String email;
+    private String address;
     public UserVO(User user) {
         userId = user.getUserId();
         phone = user.getPhone();
@@ -31,5 +32,7 @@ public class UserVO {
         sex = user.getSex();
         status = user.getStatus();
         type = user.getType();
+        email = user.getEmail();
+        address = user.getAddress();
     }
 }

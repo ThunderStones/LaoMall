@@ -61,7 +61,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public boolean removeItem(String userId, String productId) {
+    public boolean removeItem(String userId, int productId) {
         QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId);
         queryWrapper.eq("product_id", productId);
