@@ -72,7 +72,6 @@ public class UserController {
         System.out.println(user);
         UserVO userVO = userService.modifyUserInfo(originUserVO, user);
         return CommonResponse.createForSuccess(userVO);
-
     }
 
     @GetMapping("/all")

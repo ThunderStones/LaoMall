@@ -83,7 +83,10 @@ public class UserServiceImpl implements UserService {
             userUpdateWrapper.set("email", user.getEmail());
         }
         if (user.getAddress() != null) {
-            userUpdateWrapper.set("status", user.getAddress());
+            userUpdateWrapper.set("address", user.getAddress());
+        }
+        if (user.getPassword() != null) {
+            userUpdateWrapper.set("password", user.getPassword());
         }
         userUpdateWrapper.eq("user_id", originUserVO.getUserId());
         userMapper.update(null, userUpdateWrapper);
@@ -109,6 +112,4 @@ public class UserServiceImpl implements UserService {
         }
         return userVOs;
     }
-
-
 }
