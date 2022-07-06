@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service("addressService")
 public class AddressServiceImpl implements AddressService {
 
@@ -72,7 +73,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public int addAddress(UserAddress userAddress) {
-        if (userAddress.getIsDefault().equals("是")) {
+        if (userAddress.getIsDefault() == null) {
+            userAddress.setIsDefault("否");
+        } else if (userAddress.getIsDefault().equals("是")) {
             UpdateWrapper<UserAddress> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("user_id", userAddress.getUserId());
             updateWrapper.set("is_default", "否");

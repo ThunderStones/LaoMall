@@ -1,5 +1,6 @@
 package org.csu.laomall.controller.controller;
 
+import org.csu.laomall.anotation.PassToken;
 import org.csu.laomall.common.CommonResponse;
 import org.csu.laomall.entity.Category;
 import org.csu.laomall.service.CategoryService;
@@ -17,11 +18,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/categories/level/{level}")
+    @PassToken
     public CommonResponse<List<Category>> getCategoriesByLevel(@PathVariable int level) {
         return CommonResponse.createForSuccess(categoryService.getCategoriesByLevel(level));
     }
 
     @GetMapping("/category/id/{id}")
+    @PassToken
     public CommonResponse<Category> getCategoryById(@PathVariable int id) {
         Category category = categoryService.getCategoryById(id);
         if (category == null) {
