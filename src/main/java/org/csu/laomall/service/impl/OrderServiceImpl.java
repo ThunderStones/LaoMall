@@ -73,6 +73,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order payOrder(int orderId, String payType) {
         Order order = orderMapper.selectById(orderId);
+        if (order == null) {
+            return null;
+        }
         order.setPayStatus("已付款");
         switch (payType) {
             case "alipay":
