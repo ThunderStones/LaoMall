@@ -45,6 +45,10 @@ public class UserController {
         if (!userService.login(username, password)) {
             return CommonResponse.createForError("登录失败，用户名或密码错误");
         }
+        UserVO userVO = userService.getUserInfo(username);
+        if (!userVO.getStatus().equals("正常")) {
+            return CommonResponse.createForError("登录失败，用户被禁用或删除");
+        }
         // get token
         String token = JWTUtil.createToken(username);
         return CommonResponse.createForSuccess("Bearer " + token);
@@ -83,5 +87,14 @@ public class UserController {
     public CommonResponse<List<UserVO>> getDeletedUserInfo() {
         return CommonResponse.createForSuccess(userService.getDeletedUserInfo());
 
+    }
+    @PutMapping("/admin/user")
+    public CommonResponse<UserVO> adminModifyUserInfo(@RequestParam String userId, @RequestBody User user) {
+        UserVO userVO = userService.getUserInfo(userId);
+        if (userVO == null) {
+            return CommonResponse.createForError("找不到该用户");
+        }
+
+        return CommonResponse.createForSuccess(userService.modifyUserInfo(userVO, user));
     }
 }

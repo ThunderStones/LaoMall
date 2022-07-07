@@ -1,6 +1,8 @@
 package org.csu.laomall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.csu.laomall.entity.Log;
 import org.csu.laomall.entity.Order;
 import org.csu.laomall.entity.Product;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Service("statisticsService")
 public class StatisticsServiceImpl implements StatisticsService {
@@ -68,6 +71,15 @@ public class StatisticsServiceImpl implements StatisticsService {
         statisticsVO.setProductCount(productMapper.selectCount(null));
         statisticsVO.setOrderCount(orderMapper.selectCount(null));
         return statisticsVO;
+    }
+
+    @Override
+    public List<Product> getSales() {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("sales");
+        Page<Product> page = new Page<>(1, 10);
+        IPage<Product> iPage = productMapper.selectPage(page, queryWrapper);
+        return iPage.getRecords();
     }
 }
 

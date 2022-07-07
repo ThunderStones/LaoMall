@@ -2,6 +2,7 @@ package org.csu.laomall.controller.controller;
 
 import org.csu.laomall.anotation.PassToken;
 import org.csu.laomall.common.CommonResponse;
+import org.csu.laomall.entity.Product;
 import org.csu.laomall.service.StatisticsService;
 import org.csu.laomall.vo.StatisticsVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/statistics")
@@ -39,5 +42,12 @@ public class StatisticsController {
         } else {
             return CommonResponse.createForError("时间格式错误");
         }
+    }
+
+    @GetMapping("sales")
+    @PassToken
+    public CommonResponse<List<Product>> getSales() {
+        List<Product> products = statisticsService.getSales();
+        return CommonResponse.createForSuccess(products);
     }
 }
