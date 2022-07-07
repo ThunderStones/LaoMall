@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 05/07/2022 23:03:10
+ Date: 07/07/2022 15:31:27
 */
 
 SET NAMES utf8mb4;
@@ -3749,6 +3749,24 @@ INSERT INTO `area` VALUES ('659004000000', '五家渠市', '659000000000', 3);
 INSERT INTO `area` VALUES ('659006000000', '铁门关市', '659000000000', 3);
 
 -- ----------------------------
+-- Table structure for carousel
+-- ----------------------------
+DROP TABLE IF EXISTS `carousel`;
+CREATE TABLE `carousel`  (
+  `carousel_id` int NOT NULL,
+  `carousel_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `img_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `redirect_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `carousel_rank` int NULL DEFAULT NULL,
+  `is_deleted` int NULL DEFAULT NULL COMMENT '0 已删除 1 未删除',
+  PRIMARY KEY (`carousel_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of carousel
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for cart_item
 -- ----------------------------
 DROP TABLE IF EXISTS `cart_item`;
@@ -3761,7 +3779,7 @@ CREATE TABLE `cart_item`  (
   PRIMARY KEY (`cart_item_id`) USING BTREE,
   INDEX `fk_prod_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_prod_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cart_item
@@ -3834,7 +3852,7 @@ CREATE TABLE `order_info`  (
   PRIMARY KEY (`order_id`) USING BTREE,
   INDEX `fk_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of order_info
@@ -3858,7 +3876,7 @@ CREATE TABLE `order_item`  (
   INDEX `fk_prod_d`(`product_id`) USING BTREE,
   CONSTRAINT `fk_order_id` FOREIGN KEY (`order_id`) REFERENCES `order_info` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_prod_d` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of order_item
@@ -3900,7 +3918,7 @@ CREATE TABLE `product`  (
 INSERT INTO `product` VALUES (2507, '阿诺顿【3件装】短袖t恤男夏季新品男士T恤大码宽松中青年潮流男生打底衫半袖上衣服 PK黑+KY7雾蓝+音乐白 L 120-135斤', '正常发货！棉T恤【78元3件】，钜惠促销套装，多色可选，现在优惠，质量保证，送运费险！退换无忧！欢迎选购！', 78.00, 78.00, NULL, 1000, 11, '2022-07-04 19:31:22', '正常', 7, '//img11.360buyimg.com/n7/jfs/t1/146243/9/21926/112689/61daed07E91df42b8/7daac369c9cdd8e1.jpg');
 INSERT INTO `product` VALUES (2508, '罗蒙【ROMON】品牌纯棉短袖T恤男翻领刺绣POLO打底衫2022新款夏季半袖男装联名纯色国潮男装 +M07绿色* 【短袖POLO衫】 XL 建议136-150斤', '春夏季新品上市，罗蒙折扣店，七天无理由退换，都有运费险，让您买的放心，用的舒心！全店一件9.5折，2件9折', 89.00, 89.00, NULL, 1000, 98, '2022-07-04 19:31:23', '正常', 7, '//img13.360buyimg.com/n7/jfs/t1/153494/4/21511/196890/6253f2bfE043f9f84/752ca3f807bfa3f8.jpg');
 INSERT INTO `product` VALUES (2509, '南极人【2件装78】冰丝短袖t恤男潮牌2022夏季滑料冰感半袖体恤男装潮流上衣服 泼墨蓝+冰雪白【冰丝2件装】 XL（115-125斤）', '南极人【2件装78】冰丝短袖t恤男潮牌2022夏季滑料冰感半袖体恤男装潮流上衣服 泼墨蓝+冰雪白【冰丝2件装】 XL（115-125斤）', 78.00, 78.00, NULL, 1000, 54, '2022-07-04 19:31:23', '正常', 7, '//img10.360buyimg.com/n7/jfs/t1/55065/22/19720/244712/62aa99c4E1f875e70/3c3ba11e02653956.jpg');
-INSERT INTO `product` VALUES (2510, '雾卡 【纯棉三件】短袖t恤男纯色纯棉白色宽松夏季T恤男士半袖潮流衣服情侣装纯棉打底衫男装 卡其+深灰+黑色 XL 建议135-150斤', '【捞海底快递】正常加急发货！下单一定要选尺码哦,尺码选项在颜色的选择下面！舒适纯棉T恤！现在优惠！赠运费险！退换无忧！不定时涨价！', 79.00, 79.00, NULL, 1000, 5, '2022-07-04 19:31:23', '正常', 7, '//img14.360buyimg.com/n7/jfs/t1/70724/32/17572/120909/627b702aE039e3754/64d534d99d8862a6.jpg');
+INSERT INTO `product` VALUES (2510, '雾卡 【纯棉三件】短袖t恤男纯色纯棉白色宽松夏季T恤男士半袖潮流衣服情侣装纯棉打底衫男装 卡其+深灰+黑色 XL 建议135-150斤', '【捞海底快递】正常加急发货！下单一定要选尺码哦,尺码选项在颜色的选择下面！舒适纯棉T恤！现在优惠！赠运费险！退换无忧！不定时涨价！', 79.00, 79.00, NULL, 1000, 5, '2022-07-04 19:31:23', '删除', 7, '//img14.360buyimg.com/n7/jfs/t1/70724/32/17572/120909/627b702aE039e3754/64d534d99d8862a6.jpg');
 INSERT INTO `product` VALUES (2511, '真维斯短袖t恤男2022春夏季青少年宽松学生百搭休闲胖子大码时尚情侣字母半袖体恤衫ins潮流上衣服男 白色（z不言弃） L(推荐120-130斤左右)', '【情侣T恤，休闲潮流，个性印花，时尚百搭】防晒衣活动点这里', 49.00, 49.00, NULL, 1000, 12, '2022-07-04 19:31:23', '正常', 7, '//img13.360buyimg.com/n7/jfs/t1/122962/14/22208/149847/627b8383E101618f6/ac3fc1c8dbdffae3.jpg');
 INSERT INTO `product` VALUES (2512, '南极人防晒衣服男长袖轻薄透气大码男士皮肤衣户外轻薄透气钓鱼防晒服防晒衫夏季男潮 【1件装】-银灰.防晒衣 XL（推荐130-150斤）', '南极人防晒衣服男长袖轻薄透气大码男士皮肤衣户外轻薄透气钓鱼防晒服防晒衫夏季男潮 【1件装】-银灰.防晒衣 XL（推荐130-150斤）', 59.00, 59.00, NULL, 1000, 3, '2022-07-04 19:31:23', '正常', 7, '//img12.360buyimg.com/n7/jfs/t1/134435/6/3331/349195/5efae14cE4843e5b5/201b97cc5c8bfcf5.png');
 INSERT INTO `product` VALUES (2513, '【2件装】南极人短袖T恤男夏季速干潮流半袖体恤衫休闲宽松透气半截袖男士夏天汗衫衣服五分上衣男装 4108白色+4108黑色 XL', '【2件装】南极人短袖T恤男夏季速干潮流半袖体恤衫休闲宽松透气半截袖男士夏天汗衫衣服五分上衣男装 4108白色+4108黑色 XL', 79.00, 79.00, NULL, 1000, 93, '2022-07-04 19:31:23', '正常', 7, '//img13.360buyimg.com/n7/jfs/t1/187147/24/1619/949646/60939b2cE2b70fd81/6120996e329542ba.png');

@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserVO> getAllUserInfo() {
-        List<User> users = userMapper.selectList(new QueryWrapper<User>().eq("type", "普通用户"));
+        List<User> users = userMapper.selectList(new QueryWrapper<User>().eq("type", "普通用户").eq("status", "正常").or().eq("status", "停用"));
         List<UserVO> userVOs = new ArrayList<>();
         for (User user : users) {
             userVOs.add(new UserVO(user));

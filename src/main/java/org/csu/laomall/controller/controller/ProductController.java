@@ -7,10 +7,7 @@ import org.csu.laomall.service.LogService;
 import org.csu.laomall.service.ProductService;
 import org.csu.laomall.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -55,10 +52,64 @@ public class ProductController {
     @GetMapping("/product/search/{keywords}")
     @PassToken
     public CommonResponse<List<Product>> searchProduct(@PathVariable String keywords, Integer page, Integer size) {
+        if (keywords == null) {
+            return CommonResponse.createForError("搜索关键字不能为空");
+        }
         page = page == null ? 1 : page;
         size = size == null ? 20 : size;
-        List<Product> products = productService.searchProduct(keywords, page, size);
+        List<Product> products = productService.searchProduct(keywords, page, size, false);
         return CommonResponse.createForSuccess(products);
+    }
+    @GetMapping("/product/search/all/{keywords}")
+    @PassToken
+    public CommonResponse<List<Product>> searchAllProduct(@PathVariable String keywords, Integer page, Integer size) {
+        if (keywords == null) {
+            return CommonResponse.createForError("搜索关键字不能为空");
+        }
+        page = page == null ? 1 : page;
+        size = size == null ? 20 : size;
+        List<Product> products = productService.searchProduct(keywords, page, size, true);
+        return CommonResponse.createForSuccess(products);
+    }
+    @GetMapping("/product/all")
+    @PassToken
+    public CommonResponse<List<Product>> getAllProduct(Integer page, Integer size) {
+        List<Product> products = productService.getAllProduct(page, size);
+        return CommonResponse.createForSuccess(products);
+    }
+
+    @PutMapping("/product/{id}/down")
+    public CommonResponse<Product> downProduct(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return CommonResponse.createForError("没有找到该商品");
+        } else {
+            product.setStatus("已下架");
+
+            return CommonResponse.createForSuccess(productService.updateProduct(product));
+        }
+    }
+
+    @PutMapping("/product/{id}/up")
+    public CommonResponse<Product> upProduct(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return CommonResponse.createForError("没有找到该商品");
+        } else {
+            product.setStatus("正常");
+
+            return CommonResponse.createForSuccess(productService.updateProduct(product));
+        }
+    }
+
+    @DeleteMapping("/product/{id}")
+    public CommonResponse<Product> deleteProduct(@PathVariable int id) {
+        Product product = productService.getProductById(id);
+        if (product == null) {
+            return CommonResponse.createForError("没有找到该商品");
+        } else {
+            return CommonResponse.createForSuccess(productService.deleteProduct(product));
+        }
     }
 }
 
