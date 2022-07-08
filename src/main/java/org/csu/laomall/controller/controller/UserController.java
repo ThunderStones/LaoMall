@@ -97,4 +97,13 @@ public class UserController {
 
         return CommonResponse.createForSuccess(userService.modifyUserInfo(userVO, user));
     }
+
+    @GetMapping("/admin/{userId}")
+    public CommonResponse<UserVO> adminGetUserInfo(@PathVariable String userId) {
+        UserVO userVO = userService.getUserInfo(userId);
+        if (userVO == null) {
+            return CommonResponse.createForError("找不到该用户");
+        }
+        return CommonResponse.createForSuccess(userVO);
+    }
 }

@@ -54,7 +54,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getAllProduct(Integer page, Integer size) {
 
         Page<Product> pageProduct = new Page<>(page, size);
-        IPage<Product> iPage = productMapper.selectPage(pageProduct, null);
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.ne("status", "删除");
+        IPage<Product> iPage = productMapper.selectPage(pageProduct, queryWrapper);
         return iPage.getRecords();
     }
 

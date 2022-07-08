@@ -1,8 +1,10 @@
 package org.csu.laomall.controller.controller;
 
+import org.csu.laomall.anotation.PassToken;
 import org.csu.laomall.common.CommonResponse;
 import org.csu.laomall.entity.Order;
 import org.csu.laomall.service.OrderService;
+import org.csu.laomall.vo.OrderVO;
 import org.csu.laomall.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +38,9 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public CommonResponse<Order> getOrderDetail(HttpServletRequest request, @PathVariable("orderId") int orderId) {
+    public CommonResponse<OrderVO> getOrderDetail(HttpServletRequest request, @PathVariable("orderId") int orderId) {
         String userId = ((UserVO) request.getAttribute("user")).getUserId();
-        Order order = orderService.getOrderByOrderId(orderId);
+        OrderVO order = orderService.getOrderDetailByOrderId(orderId);
         if (order == null) {
             return CommonResponse.createForError("订单不存在");
         } else if (!order.getUserId().equals(userId)) {
@@ -96,5 +98,12 @@ public class OrderController {
             order = orderService.cancelOrder(order);
             return CommonResponse.createForSuccess(order);
         }
+    }
+
+    @GetMapping("/list/all")
+    @PassToken
+    public CommonResponse<List<Order>> getOrderList() {
+        List<Order> orderList = orderService.getOrderList();
+        return CommonResponse.createForSuccess(orderList);
     }
 }

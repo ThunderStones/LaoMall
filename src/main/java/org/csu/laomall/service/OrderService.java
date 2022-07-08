@@ -1,6 +1,7 @@
 package org.csu.laomall.service;
 
 import org.csu.laomall.entity.Order;
+import org.csu.laomall.vo.OrderVO;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface OrderService {
     Order receiptOrder(Order order);
 
     Order cancelOrder(Order order);
+
+    List<Order> getOrderList();
+
+    OrderVO getOrderDetailByOrderId(int orderId);
 }

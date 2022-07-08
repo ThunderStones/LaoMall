@@ -43,7 +43,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
 
         if (token == null) {
             System.out.println("token is null");
-            generateResponse("token is null", response);
+            generateResponse("没有在header中找到Authorization字段，请在头部加入Authorization字段并将值设为登陆后返回的token。(token is null)", response);
             return false;
         }
         System.out.println(token.replace("Bearer ", ""));

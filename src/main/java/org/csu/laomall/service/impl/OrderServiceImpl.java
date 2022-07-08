@@ -1,19 +1,25 @@
 package org.csu.laomall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.csu.laomall.entity.Order;
 import org.csu.laomall.entity.OrderItem;
+import org.csu.laomall.entity.Product;
 import org.csu.laomall.persistence.OrderItemMapper;
 import org.csu.laomall.persistence.OrderMapper;
+import org.csu.laomall.persistence.ProductMapper;
 import org.csu.laomall.service.AddressService;
 import org.csu.laomall.service.CartService;
 import org.csu.laomall.service.OrderService;
 import org.csu.laomall.vo.CartItemVO;
+import org.csu.laomall.vo.OrderItemVO;
+import org.csu.laomall.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("orderService")
@@ -26,6 +32,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressService addressService;
     @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
+    private ProductMapper productMapper;
 
     @Override
     @Transactional()
@@ -54,6 +62,10 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setNum(cartItemVO.getQuantity());
             orderItem.setTotalPrice(cartItemVO.getTotalPrice());
             orderItemMapper.insert(orderItem);
+            Product product = productMapper.selectById(cartItemVO.getProductId());
+            product.setInventory(product.getInventory() - cartItemVO.getQuantity());
+            product.setSales(product.getSales() + cartItemVO.getQuantity());
+            productMapper.updateById(product);
         }
         order.setPrice(totalPrice);
         orderMapper.updateById(order);
@@ -69,7 +81,19 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderByOrderId(int orderId) {
         return orderMapper.selectById(orderId);
     }
-
+    @Override
+    public OrderVO getOrderDetailByOrderId(int orderId) {
+        Order order = orderMapper.selectById(orderId);
+        List<OrderItem> orderItemList = orderItemMapper.selectList(new QueryWrapper<OrderItem>().eq("order_id", orderId));
+        List<OrderItemVO> orderItemVOS = new ArrayList<>();
+        orderItemList.forEach(orderItem -> {
+            OrderItemVO orderItemVO = new OrderItemVO(orderItem);
+            Product product = productMapper.selectById(orderItem.getProductId());
+            orderItemVO.setProduct(product);
+            orderItemVOS.add(orderItemVO);
+        });
+        return new OrderVO(order, orderItemVOS);
+    }
     @Override
     public Order payOrder(int orderId, String payType) {
         Order order = orderMapper.selectById(orderId);
@@ -107,5 +131,11 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus("已取消");
         orderMapper.updateById(order);
         return orderMapper.selectById(order.getOrderId());
+    }
+
+    @Override
+    public List<Order> getOrderList() {
+        return orderMapper.selectList(null);
+
     }
 }
