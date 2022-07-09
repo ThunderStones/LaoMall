@@ -32,13 +32,15 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<LogVO> getAllLog() {
-        List<Log> logs = logMapper.selectList(null);
+        QueryWrapper<Log> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("create_date");
+        List<Log> logs = logMapper.selectList(queryWrapper);
         return getLogVOS(logs);
     }
 
     @Override
     public List<LogVO> getLogByUsername(String username) {
-        List<Log> logs = logMapper.selectList(new QueryWrapper<Log>().eq("user_id", username));
+        List<Log> logs = logMapper.selectList(new QueryWrapper<Log>().eq("user_id", username).orderByDesc("create_date"));
         return getLogVOS(logs);
     }
 

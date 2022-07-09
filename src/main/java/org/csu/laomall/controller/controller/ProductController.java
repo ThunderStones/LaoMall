@@ -6,11 +6,15 @@ import org.csu.laomall.entity.Product;
 import org.csu.laomall.service.LogService;
 import org.csu.laomall.service.ProductService;
 import org.csu.laomall.util.JWTUtil;
+import org.csu.laomall.vo.ProductVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ProductController {
@@ -21,14 +25,14 @@ public class ProductController {
 
     @GetMapping("/product/{id}")
     @PassToken
-    public CommonResponse<Product> getProductById(@PathVariable int id, HttpServletRequest request) {
+    public CommonResponse<ProductVO> getProductById(@PathVariable int id, HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         String userId = null;
         if (token != null) {
             userId = JWTUtil.getUsername(token.replace("Bearer ", ""));
         }
         logService.log(userId, id);
-        Product product = productService.getProductById(id);
+        ProductVO product = productService.getProductVOById(id);
         if (product == null) {
             return CommonResponse.createForError("没有找到该商品");
         } else {
@@ -60,6 +64,7 @@ public class ProductController {
         List<Product> products = productService.searchProduct(keywords, page, size, false);
         return CommonResponse.createForSuccess(products);
     }
+
     @GetMapping("/product/search/all/{keywords}")
     @PassToken
     public CommonResponse<List<Product>> searchAllProduct(@PathVariable String keywords, Integer page, Integer size) {
@@ -71,6 +76,7 @@ public class ProductController {
         List<Product> products = productService.searchProduct(keywords, page, size, true);
         return CommonResponse.createForSuccess(products);
     }
+
     @GetMapping("/product/all")
     @PassToken
     public CommonResponse<List<Product>> getAllProduct(Integer page, Integer size) {
@@ -111,6 +117,22 @@ public class ProductController {
             return CommonResponse.createForSuccess(productService.deleteProduct(product));
         }
     }
+
+
+    @PostMapping("/product")
+    public CommonResponse<ProductVO> addProduct(@RequestBody ProductVO productVO) {
+        productVO.setOriginPrice(productVO.getPrice());
+        productVO.setCreateTime(new Date());
+        productVO.setSales(0);
+        productVO.setStatus("正常");
+        ProductVO product = productService.addProduct(productVO);
+        if (product == null) {
+            return CommonResponse.createForError("添加商品失败");
+        } else {
+            return CommonResponse.createForSuccess(product);
+        }
+    }
+
 }
 
 

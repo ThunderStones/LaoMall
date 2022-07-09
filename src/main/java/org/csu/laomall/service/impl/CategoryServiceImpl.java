@@ -23,4 +23,17 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryById(int categoryId) {
         return categoryMapper.selectById(categoryId);
     }
+
+    @Override
+    public Category getCategoryByName(String name) {
+        return categoryMapper.selectOne(new QueryWrapper<Category>().eq("name", name));
+    }
+
+    @Override
+    public Category addCategory(Category category) {
+        categoryMapper.insert(category);
+        return category;
+    }
+
+
 }
