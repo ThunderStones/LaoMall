@@ -1,6 +1,12 @@
 package org.csu.laomall.controller.controller;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.request.AlipayTradePagePayRequest;
 import org.csu.laomall.anotation.PassToken;
+import org.csu.laomall.common.AlipayConst;
 import org.csu.laomall.common.CommonResponse;
 import org.csu.laomall.entity.Order;
 import org.csu.laomall.service.OrderService;
@@ -10,8 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @RestController
 @RequestMapping("/order")
@@ -43,8 +50,7 @@ public class OrderController {
     }
 
 
-
-        @GetMapping("/list")
+    @GetMapping("/list")
     public CommonResponse<List<Order>> getOrderList(HttpServletRequest request) {
         String userId = ((UserVO) request.getAttribute("user")).getUserId();
         List<Order> orderList = orderService.getOrderListByUserId(userId);
@@ -78,6 +84,40 @@ public class OrderController {
         } else {
             order = orderService.payOrder(orderId, payType);
             return CommonResponse.createForSuccess(order);
+        }
+    }
+
+    @PostMapping ("/alipayCallback")
+    @PassToken
+    public CommonResponse<Order> alipayCallback(HttpServletRequest request) {
+        System.out.println("11111111111111111111111111111111111111111111");
+        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String[]> requestParams = request.getParameterMap();
+        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用
+//            valueStr = new String(valueStr.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            params.put(name, valueStr);
+        }
+        System.out.println(Integer.parseInt(params.get("out_trade_no")));
+        System.out.println("222222222222222222222222222222222222222222");
+        boolean signVerified = false; //调用SDK验证签名
+        try {
+            signVerified = AlipaySignature.rsaCheckV1(params, AlipayConst.ALIPAY_PUBLIC_KEY, AlipayConst.CHARSET, AlipayConst.SIGN_TYPE);
+        } catch (AlipayApiException e) {
+            return CommonResponse.createForError("验证签名失败");
+        }
+        if (signVerified) {
+            Order order = orderService.payOrder(Integer.parseInt(params.get("out_trade_no")), "alipay");
+            return CommonResponse.createForSuccess(order);
+        } else {
+            return CommonResponse.createForError("验签失败");
         }
     }
 
@@ -119,5 +159,38 @@ public class OrderController {
     public CommonResponse<List<Order>> getOrderList() {
         List<Order> orderList = orderService.getOrderList();
         return CommonResponse.createForSuccess(orderList);
+    }
+
+    @GetMapping("/alipay/{orderId}")
+    @PassToken
+    public CommonResponse<String> getAlipayUrl(@PathVariable("orderId") int orderId, @RequestParam String returnUrl) {
+        AlipayClient alipayClient = new DefaultAlipayClient(
+                AlipayConst.GATEWAY_URL,
+                AlipayConst.APP_ID,
+                AlipayConst.APP_PRIVATE_KEY,
+                AlipayConst.FORMAT,
+                AlipayConst.CHARSET,
+                AlipayConst.ALIPAY_PUBLIC_KEY,
+                AlipayConst.SIGN_TYPE);
+
+        AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
+        alipayRequest.setReturnUrl(returnUrl);
+        alipayRequest.setNotifyUrl(AlipayConst.NOTIFY_URL);
+
+        alipayRequest.setBizContent("{\"out_trade_no\":\"" + orderId + "\"," +
+                "\"total_amount\":\"0.01\"," +
+                "\"subject\":\"订单支付\"," +
+                "\"body\":\"订单支付\"," +
+                "\"timeout_express\":\"10m\"," +
+                "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+
+        String form = "";
+        try {
+            form = alipayClient.pageExecute(alipayRequest).getBody();
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        System.out.println(form);
+        return CommonResponse.createForSuccess(form);
     }
 }

@@ -6,7 +6,7 @@ import org.csu.laomall.vo.UserVO;
 import java.util.List;
 
 public interface UserService {
-    UserVO register(String username, String password, String type);
+    UserVO register(String username, String password, String type, String phone);
 
     boolean checkUsernameExistence(String username);
 

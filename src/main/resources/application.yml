@@ -16,3 +16,6 @@ logging:
   level:
     org.csu.laomall.persistence: trace
     org.springframework.web: trace
+
+app:
+  appId: 2021000121619901

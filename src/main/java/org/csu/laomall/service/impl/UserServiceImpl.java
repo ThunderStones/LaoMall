@@ -20,13 +20,14 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public UserVO register(String username, String password, String type) {
+    public UserVO register(String username, String password, String type, String phone) {
         if (checkUsernameExistence(username)) {
             return null;
         }
         User user = new User();
         user.setUserId(username);
         user.setPassword(password);
+        user.setPhone(phone);
         user.setRegisterDate(new Date());
         if (this.type.contains(type)) {
             user.setType(type);

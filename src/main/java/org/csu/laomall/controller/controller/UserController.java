@@ -24,10 +24,10 @@ public class UserController {
     @PostMapping("")
     @PassToken
     public CommonResponse<UserVO> register(@RequestBody User user) {
-        if (user.getUserId().isEmpty() || user.getPassword().isEmpty()) {
-            return CommonResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(), "用户名或密码不能为空");
+        if (user.getUserId().isEmpty() || user.getPassword().isEmpty() || user.getPhone().isEmpty()) {
+            return CommonResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(), "用户名,密码或手机不能为空");
         }
-        UserVO userVO = userService.register(user.getUserId(), user.getPassword(), user.getType());
+        UserVO userVO = userService.register(user.getUserId(), user.getPassword(), user.getType(), user.getPhone());
         if (userVO == null) {
             return CommonResponse.createForError("注册失败，用户名已存在");
         }
