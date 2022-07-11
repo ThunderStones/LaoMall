@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         if (this.type.contains(type)) {
             user.setType(type);
         }
+        user.setType("普通用户");
         user.setStatus("正常");
         userMapper.insert(user);
         return new UserVO(userMapper.selectById(user.getUserId()));

@@ -23,4 +23,6 @@ public interface ProductService {
     ProductVO getProductVOById(int id);
 
     List<Product> searchProduct(String keywords, Integer page, Integer size, boolean b, int categoryId);
+
+    List<Product> searchProductWithinCategory(int categoryId, String keywords, Integer page, Integer size);
 }

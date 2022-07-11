@@ -74,4 +74,22 @@ public class CartServiceImpl implements CartService {
         queryWrapper.eq("user_id", userId);
         cartItemMapper.delete(queryWrapper);
     }
+
+    @Override
+    public CartItemVO getCartItemByUserIdAndCartId(String userId, Integer cartId) {
+        QueryWrapper<CartItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("cart_item_id", cartId);
+        CartItem cartItem = cartItemMapper.selectOne(queryWrapper);
+        Product product = productMapper.selectById(cartItem.getProductId());
+        CartItemVO cartItemVO = new CartItemVO();
+        cartItemVO.setId(cartItem.getCartItemId());
+        cartItemVO.setProductId(cartItem.getProductId());
+        cartItemVO.setQuantity(cartItem.getQuantity());
+        cartItemVO.setInStock(product.getInventory() > 0);
+        cartItemVO.setUnitPrice(product.getPrice());
+        cartItemVO.calculateTotalPrice();
+        cartItemVO.setProduct(product);
+        return cartItemVO;
+    }
 }

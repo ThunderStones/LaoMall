@@ -71,6 +71,47 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.updateById(order);
         return order;
     }
+    @Override
+    @Transactional
+    public Order placeOrderWithIds(String userId, int addressId, Integer[] cartIds) {
+        List<CartItemVO> list = new ArrayList<>();
+        for (Integer cartId : cartIds) {
+            CartItemVO cartItemVO = cartService.getCartItemByUserIdAndCartId(userId, cartId);
+            if (cartItemVO == null) {
+                return null;
+            } else {
+                list.add(cartItemVO);
+                cartService.removeItem(userId, cartItemVO.getProductId());
+            }
+        }
+
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setAddress(addressService.getRawString(addressId));
+        order.setCreateTime(new java.util.Date());
+        order.setStatus("未付款");
+        order.setPayStatus("未付款");
+        order.setPrice(new BigDecimal(0));
+        BigDecimal totalPrice = new BigDecimal(0);
+        orderMapper.insert(order);
+        for (CartItemVO cartItemVO : list) {
+            totalPrice = totalPrice.add(cartItemVO.getTotalPrice());
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrderId(order.getOrderId());
+            orderItem.setProductId(cartItemVO.getProductId());
+            orderItem.setPrice(cartItemVO.getUnitPrice());
+            orderItem.setNum(cartItemVO.getQuantity());
+            orderItem.setTotalPrice(cartItemVO.getTotalPrice());
+            orderItemMapper.insert(orderItem);
+            Product product = productMapper.selectById(cartItemVO.getProductId());
+            product.setInventory(product.getInventory() - cartItemVO.getQuantity());
+            product.setSales(product.getSales() + cartItemVO.getQuantity());
+            productMapper.updateById(product);
+        }
+        order.setPrice(totalPrice);
+        orderMapper.updateById(order);
+        return order;
+    }
 
     @Override
     public List<Order> getOrderListByUserId(String userId) {
@@ -94,6 +135,8 @@ public class OrderServiceImpl implements OrderService {
         });
         return new OrderVO(order, orderItemVOS);
     }
+
+
     @Override
     public Order payOrder(int orderId, String payType) {
         Order order = orderMapper.selectById(orderId);

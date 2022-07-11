@@ -65,6 +65,18 @@ public class ProductController {
         return CommonResponse.createForSuccess(products);
     }
 
+    @GetMapping("/category/{categoryId}/search/{keywords}")
+    @PassToken
+    public CommonResponse<List<Product>> searchProductWithinCatetory(@PathVariable int categoryId,@PathVariable String keywords, Integer page, Integer size) {
+        if (keywords == null) {
+            return CommonResponse.createForError("搜索关键字不能为空");
+        }
+        page = page == null ? 1 : page;
+        size = size == null ? 20 : size;
+        List<Product> products = productService.searchProductWithinCategory(categoryId ,keywords, page, size);
+        return CommonResponse.createForSuccess(products);
+    }
+
     @GetMapping("/product/search/all/{keywords}")
     @PassToken
     public CommonResponse<List<Product>> searchAllProduct(@PathVariable String keywords, Integer page, Integer size) {
@@ -76,6 +88,8 @@ public class ProductController {
         List<Product> products = productService.searchProduct(keywords, page, size, true);
         return CommonResponse.createForSuccess(products);
     }
+
+
 
     @GetMapping("/product/all")
     @PassToken

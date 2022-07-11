@@ -141,6 +141,16 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.selectPage(pageProduct, queryWrapper).getRecords();
     }
 
+    @Override
+    public List<Product> searchProductWithinCategory(int categoryId, String keywords, Integer page, Integer size) {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category", categoryId);
+        queryWrapper.eq("status", "正常");
+        queryWrapper.and(productQueryWrapper -> productQueryWrapper.like("name", keywords).or().like("detail", keywords));
+        Page<Product> pageProduct = new Page<>(page, size);
+        return productMapper.selectPage(pageProduct, queryWrapper).getRecords();
+    }
+
     private Product productvo2product(ProductVO productVO) {
         Product product = new Product();
         product.setName(productVO.getName());

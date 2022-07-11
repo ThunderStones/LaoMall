@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,20 @@ public class OrderController {
 
     }
 
-    @GetMapping("/list")
+    @PostMapping("/ids")
+    public CommonResponse<Order> placeOrder(HttpServletRequest request, @RequestParam int addressId, @RequestBody Integer[] CartIds) {
+        String userId = ((UserVO) request.getAttribute("user")).getUserId();
+        Order order = orderService.placeOrderWithIds(userId, addressId, CartIds);
+        if (order == null) {
+            return CommonResponse.createForError("该用户购物车找不到购物车Id对应的记录");
+        } else {
+            return CommonResponse.createForSuccess(order);
+        }
+    }
+
+
+
+        @GetMapping("/list")
     public CommonResponse<List<Order>> getOrderList(HttpServletRequest request) {
         String userId = ((UserVO) request.getAttribute("user")).getUserId();
         List<Order> orderList = orderService.getOrderListByUserId(userId);

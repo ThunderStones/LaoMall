@@ -21,4 +21,6 @@ public interface OrderService {
     List<Order> getOrderList();
 
     OrderVO getOrderDetailByOrderId(int orderId);
+
+    Order placeOrderWithIds(String userId, int addressId, Integer[] cartIds);
 }
