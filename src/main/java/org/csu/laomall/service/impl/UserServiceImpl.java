@@ -114,4 +114,14 @@ public class UserServiceImpl implements UserService {
         }
         return userVOs;
     }
+
+    @Override
+    public UserVO getUserInfoByPhone(String phone) {
+        if (userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone)) == null) {
+            return null;
+        } else {
+            return new UserVO(userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone)));
+        }
+
+    }
 }

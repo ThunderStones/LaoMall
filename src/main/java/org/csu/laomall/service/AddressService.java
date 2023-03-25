@@ -9,8 +9,11 @@ import java.util.List;
 
 public interface AddressService {
     List<Area> getAllProvince();
+
     List<Area> getAllCity(String provinceId);
+
     List<Area> getAllDistrict(String cityId);
+
     String getNameByAreaId(String areaId);
 
     boolean setAddressInfo(UserAddress userAddress, String areaId);
@@ -24,4 +27,6 @@ public interface AddressService {
     int updateAddress(UserAddress userAddress);
 
     String getRawString(int addressId);
+
+    int deleteAddress(int  id, String userId);
 }

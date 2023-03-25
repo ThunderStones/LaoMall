@@ -1,5 +1,6 @@
 package org.csu.laomall.controller.controller;
 
+import com.zhenzi.sms.ZhenziSmsClient;
 import org.csu.laomall.anotation.PassToken;
 import org.csu.laomall.common.CommonResponse;
 import org.csu.laomall.common.ResponseCode;
@@ -105,5 +106,40 @@ public class UserController {
             return CommonResponse.createForError("找不到该用户");
         }
         return CommonResponse.createForSuccess(userVO);
+    }
+
+    @GetMapping("/token/phone")
+    @PassToken
+    public CommonResponse<Map<String, String>> getTokenByValidPhone(@RequestParam String phone) {
+        if (phone.length() != 11) {
+            return CommonResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(), "手机号不能为空或格式错误");
+        }
+        UserVO userVO = userService.getUserInfoByPhone(phone);
+        if (userVO == null) {
+            return CommonResponse.createForError("找不到该用户");
+        }
+        String token = JWTUtil.createToken(userVO.getUserId());
+        Map<String, String> map = new HashMap<>(1);
+        map.put("token", "Bearer " + token);
+        ZhenziSmsClient client = new ZhenziSmsClient("https://sms_developer.zhenzikj.com", "111420", "62436dea-5302-4385-bb42-b57bdcf15ac0");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("number", phone);
+        params.put("templateId", "9884");
+        String[] templateParams = new String[2];
+        templateParams[0] = Integer.toString((int)(Math.random()*(9999-1000+1))+1000);
+        templateParams[1] = "5分钟";
+        params.put("templateParams", templateParams);
+        String result = null;
+        try {
+            result = client.send(params);
+        } catch (Exception e) {
+            return CommonResponse.createForError("发送失败");
+        }
+        System.out.println(result);
+        if (!result.contains("发送成功")) {
+            return CommonResponse.createForError("发送失败");
+        }
+        map.put("code", templateParams[0]);
+        return CommonResponse.createForSuccess(map);
     }
 }

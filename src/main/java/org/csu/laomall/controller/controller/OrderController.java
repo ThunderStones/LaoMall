@@ -87,7 +87,7 @@ public class OrderController {
         }
     }
 
-    @PostMapping ("/alipayCallback")
+    @PostMapping("/alipayCallback")
     @PassToken
     public CommonResponse<Order> alipayCallback(HttpServletRequest request) {
         System.out.println("11111111111111111111111111111111111111111111");
@@ -176,9 +176,9 @@ public class OrderController {
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
         alipayRequest.setReturnUrl(returnUrl);
         alipayRequest.setNotifyUrl(AlipayConst.NOTIFY_URL);
-
+        Order order = orderService.getOrderByOrderId(orderId);
         alipayRequest.setBizContent("{\"out_trade_no\":\"" + orderId + "\"," +
-                "\"total_amount\":\"0.01\"," +
+                "\"total_amount\":\"" + order.getPrice().toString() + "\"," +
                 "\"subject\":\"订单支付\"," +
                 "\"body\":\"订单支付\"," +
                 "\"timeout_express\":\"10m\"," +

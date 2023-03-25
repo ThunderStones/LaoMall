@@ -22,7 +22,6 @@ public class AddressServiceImpl implements AddressService {
     @Autowired
     private UserAddressMapper userAddressMapper;
 
-
     @Override
     public List<Area> getAllProvince() {
         return areaMapper.selectList(new QueryWrapper<Area>().eq("level", "1"));
@@ -96,7 +95,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public int updateAddress(UserAddress userAddress) {
-        if (userAddress.getIsDefault().equals("是")) {
+        if ("是".equals(userAddress.getIsDefault())) {
             UpdateWrapper<UserAddress> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("user_id", userAddress.getUserId());
             updateWrapper.set("is_default", "否");
@@ -109,5 +108,14 @@ public class AddressServiceImpl implements AddressService {
     public String getRawString(int addressId) {
         UserAddress userAddress = userAddressMapper.selectById(addressId);
         return userAddress.getProvince() + "-" + userAddress.getCity() + "-" + userAddress.getDistrict() + "-" + userAddress.getDetail();
+    }
+
+    @Override
+    public int deleteAddress(int id, String userId) {
+        UpdateWrapper<UserAddress> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("address_id", id);
+        updateWrapper.eq("user_id", userId);
+        updateWrapper.set("status", "删除");
+        return userAddressMapper.update(null,updateWrapper);
     }
 }

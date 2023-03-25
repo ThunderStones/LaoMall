@@ -40,10 +40,12 @@ public class AddressController {
     public CommonResponse<UserAddress> addAddress(@RequestBody UserAddress userAddress, HttpServletRequest request) {
         String userId = ((UserVO) request.getAttribute("user")).getUserId();
         System.out.println(userAddress);
-        if (userAddress.getAreaId() != null) {
+        if (userAddress.getAreaId() != null && !userAddress.getAreaId().isEmpty()) {
             if (!addressService.setAddressInfo(userAddress, userAddress.getAreaId())) {
-                return CommonResponse.createForError("AreaId 不是三级地址Id");
+                userAddress.setAreaId(null);
             }
+        } else {
+            userAddress.setAreaId(null);
         }
         userAddress.setUserId(userId);
         userAddress.setStatus("正常");
@@ -63,12 +65,13 @@ public class AddressController {
     @PutMapping("")
     public CommonResponse<UserAddress> updateAddress( @RequestBody UserAddress userAddress, HttpServletRequest request) {
         String userId = ((UserVO) request.getAttribute("user")).getUserId();
-        if (!userId.equalsIgnoreCase(userAddress.getUserId())) {
-            return CommonResponse.createForError("该用户地址id所对应的地址不属于该用户");
-        }
+        System.out.println(userAddress);
+//        if (!userId.equalsIgnoreCase(userAddress.getUserId())) {
+//            return CommonResponse.createForError("该用户地址id所对应的地址不属于该用户");
+//        }
         if (userAddress.getAreaId() != null) {
             if (!addressService.setAddressInfo(userAddress, userAddress.getAreaId())) {
-                return CommonResponse.createForError("AreaId 不是三级地址Id");
+                userAddress.setAreaId(null);
             }
         }
         userAddress.setUserId(userId);
@@ -76,6 +79,16 @@ public class AddressController {
             return CommonResponse.createForSuccessMessage("更新成功");
         } else {
             return CommonResponse.createForError("更新失败");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public CommonResponse<String> deleteAddress(@PathVariable int id, HttpServletRequest request) {
+        String userId = ((UserVO) request.getAttribute("user")).getUserId();
+        if (addressService.deleteAddress(id, userId) > 0) {
+            return CommonResponse.createForSuccessMessage("删除成功");
+        } else {
+            return CommonResponse.createForError("删除失败");
         }
     }
 

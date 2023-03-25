@@ -21,4 +21,6 @@ public interface UserService {
     List<UserVO> getAllUserInfo();
 
     List<UserVO> getDeletedUserInfo();
+
+    UserVO getUserInfoByPhone(String phone);
 }
